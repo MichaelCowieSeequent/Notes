@@ -26,7 +26,7 @@ parser.add_argument('-w', '--width',
                     type=int, 
                     required=True, 
                     help='Width of rectangle')
-# -h is required for help, therefore -H is used..
+# -h is required for help, therefore -H is used.
 parser.add_argument('-H', '--height', 
                     type=int, 
                     required=True, 
