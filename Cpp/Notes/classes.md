@@ -666,20 +666,68 @@ We have just seen how to increase the capabilities of an existing class without 
 
 C++ provides a third visibiity modifier, `protected`, which serve a limited purpose in inheritance. A member declared as `protected` is accessible by the member functions within its class and any class **immediately derived** from it. It cannot be accessed by the functions outside these two classes. A class can now use all the three visibility modes as illustrated below:
 
+`protected` means that it is visible only inside this class and classes derived from it.
+
+`virtual` means that it can be overriden in derived classes.
+
 ```C++
 class Alpha
 {
-    private:   // Optional text
-        ...    // Visible to member functions
-        ...    // within its class
+    private:
+        ...    // Visible to member functions within its class
+        ...   
     protected:
-        ...    // Visible to member functions of
-        ...    // its own and immediately derived class
+        ...    // Visible to member functions of its own and immediately derived class
+        ... 
     public:
-        ...   // Visible to all functions
-        ...   // in the program
+        ...   // Visible to all functions in the program
+        ... 
 }
 ```
+
+To reiterate another example to demonstrate I have created the code below,
+
+```C++
+#include <iostream>
+
+class Base {
+public:
+    virtual void show() {
+        std::cout << "Base class show()" << std::endl;
+    }
+
+protected:
+    virtual void process() {
+        std::cout << "Base class process()" << std::endl;
+    }
+};
+
+class Derived : public Base {
+public:
+    void show() override {
+        std::cout << "Derived class show()" << std::endl;
+        process(); // We CAN access it here, i.e. inside the class, but NOT from outside because it is `protected`
+    }
+
+protected:
+    void process() override {
+        std::cout << "Derived class process()" << std::endl;
+    }
+};
+
+int main() {
+    Derived derived = Derived();
+    derived.show(); // Output: "Derived class show()"
+    
+    derived.process(); // ERROR: `process` is protected, we CANNOT access it from OUTSIDE
+    return 0;
+}
+
+```
+
+The key point to understand is that `derived.process();` will raise an error because `process` is called outside of the class and it is labelled `protected`. However, we can call `process` within
+`show`, in this example we call it. Therefore, calling `show` of the `Derived` object will call both functions and outside two print statements. The `protected` methods is accessible to us
+because we directly inherit from the class, aswell as being able to override it due to the `virtual` declaration.
 
 When a `protected` member is inherited in `public` mode, it comes `protected` in the derived class too and therefore is accessible by the member functions of the derived class. It is also ready for further inheritance.
 
