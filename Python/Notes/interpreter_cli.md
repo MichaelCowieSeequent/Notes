@@ -18,7 +18,35 @@ It is not uncommon to have multiple Python versions installed on a single machin
 
 Suppose we then start a new project, where we want to use Python 3.9. We create a virtual environment called `.env` and activiate it. Typing `python` in a shell starts the 3.9 interpreter, **BUT** if you type `pip install <some-package>`, then, what version of `pip` is used? Is it the pip for the default version, i.e. the one in my `WindowsApps` directory from before, or the Python version within the virtual environment?
 
+# The `-m` flag
+
 An easy way to get around that ambiguity is simply to use `python -m pip install <some-package>`. The `-m` flag makes sure that you are using the `pip` **that is tied to the active Python executeable**. It is good practice to **always** use `-m`, even if you have just one global version of Python installed from which you create virtual environments.
+
+The `python -help` will tell us that the `-m` flag `-m mod : run library module as a script`. However, what does it mean to run a library module as a script?
+
+Let's compare the commands,
+
+```Python
+python -m pip install numpy
+```
+
+and
+
+```Python
+pip install numpy
+```
+
+First, let's go over `python -m pip install numpy` and understand what it means to "run a module as a script". In Python, a module `some_module` is typically imported into another Python file with a `import some_module` statement at the top of the importing file. This enables the use of functions, classes, and variables defined in `some_module` inside the importing file. To execute `some_module` as a script instead of importing it, you would define a `if __name__ == "__main__"` block inside the file. This block gets executed when running `python some_module.py` on the command line. This is useful because you **do not** want this code block to run when importing into other files, but you **do** want it run when invoked from the command line.
+
+We can also create a directory or zipfile full of code and include a `__main__.py`. Then you can simply name the directory or zipfile on the command line and it will execute the `__main__.py` automatically. Hence, when inspecting our Python interpreter location and look at the `pip` inside of `site-packages`, this is what is being ran when using `python -m pip install numpy`. It is executing the `pip` Python source code.
+
+
+![](./images/pip_1.png)
+
+However, when using `pip install numpy` it is instead using `pip.exe`. This is instead found under `Scripts`. Remember that these locations can be found on which `pip` you will be using the bash command `where pip`. We do not want to accidentally use a `pip` and install to the wrong Python interpreter location and ideally want to use `pip -m pip` to know what we are using the module tied to our interpreter.
+
+![](./images/pip_2.png)
+
 
 # Site-packages
 
